@@ -7,14 +7,18 @@
  */
 
 import React, {Component} from 'react';
-import AppWithNavigationState from './src/Navigator/AppNavigator';
+import  AppWithNavigationState,{store} from './src/Navigator/AppNavigator';
 import {YellowBox} from 'react-native';
+import {Provider} from "react-redux";
 YellowBox.ignoreWarnings(['Remote debugger']);
 type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
+
     render() {
         return (
+            <Provider store={store}>
             <AppWithNavigationState/>
+            </Provider>
         );
     }
 }

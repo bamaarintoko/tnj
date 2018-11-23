@@ -1,23 +1,23 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Text} from 'react-native'
-
+import {View, Text} from "react-native"
 function mapStateToProps(state) {
     return {
-        redAuth : state.redAuth
+        state: state.nav,
     };
 }
 
-class ScreenLogin extends Component {
+class ScreenSplash extends Component {
     componentDidMount() {
-
-        console.log("asd", this.props)
+        console.log(this.props.state)
     }
 
     render() {
         return (
             <View>
-                <Text>Login</Text>
+                <Text>
+                    Splash
+                </Text>
             </View>
         );
     }
@@ -25,4 +25,4 @@ class ScreenLogin extends Component {
 
 export default connect(
     mapStateToProps,
-)(ScreenLogin);
+)(ScreenSplash);
