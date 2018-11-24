@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {View, Text, StyleSheet, StatusBar, Image} from 'react-native'
 import {Container, Input, Item, Button} from 'native-base'
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {InputPassword, InputUsername} from "../../Components/Input";
 
 function mapStateToProps(state) {
     return {
@@ -10,36 +11,84 @@ function mapStateToProps(state) {
     };
 }
 
+let errors = {};
+
 class ScreenLogin extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            input_error: [],
+            username: '',
+            password: ''
+        }
+        this.onSave = this.onSave.bind(this)
+    }
+
     componentDidMount() {
 
-        console.log("asd", this.props)
+        // console.log("asd", this.props)
+    }
+
+    onValidate = (key) => {
+        return (e) => {
+            // console.log('----->e', this.state[key].length)
+            if (this.state[key].length < 1) {
+                errors[key] = {error: true, error_message: 'required'}
+            } else {
+                errors[key] = false
+            }
+            this.setState({input_error: errors})
+        }
+
+    }
+
+    onSave() {
+        let count_errors = []
+
+        if (this.state.username.length < 1) {
+            errors['username'] = {error: true, error_message: 'required'}
+            count_errors.push({username: true})
+        }
+
+        if (this.state.password.length < 1) {
+            errors['password'] = {error: true, error_message: 'required'};
+            count_errors.push({password: true})
+        }
+        if (count_errors.length < 1) {
+            console.log("no error")
+        } else {
+            // console.log("error",errors)
+            this.setState({
+                input_error : errors
+            })
+        }
     }
 
     render() {
+        // console.log(this.state.input_error.username)
         return (
             <Container>
                 <StatusBar backgroundColor={"#FF6E40"}/>
                 <View style={styles.container}>
-                <Text style={{fontSize:hp('3%'), color:'#FFF'}}>Tonjoo Test</Text>
+                    <Text style={{fontSize: hp('3%'), color: '#FFF'}}>Tonjoo Test</Text>
                 </View>
                 <View style={styles.container_}>
                     <View style={{width: '100%'}}>
-                        <View style={styles.input}>
-                            <Text style={styles.label_text}>Username</Text>
-                            <Item regular style={styles.text_input}>
-                                <Input/>
-                            </Item>
-                        </View>
-                        <View style={styles.input}>
-                            <Text style={styles.label_text}>Password</Text>
-                            <Item regular style={styles.text_input}>
-                                <Input/>
-                            </Item>
-                        </View>
+                        <InputUsername
+                            onBlur={this.onValidate('username')}
+                            isError={this.state.input_error.username}
+                            val={this.state.username}
+                            onChange={(e) => this.setState({username: e})}
+                        />
+                        <InputPassword
+                            onBlur={this.onValidate('password')}
+                            isError={this.state.input_error.password}
+                            val={this.state.password}
+                            onChange={(e) => this.setState({password: e})}
+                        />
                         <View style={styles.btn}>
-                            <Button full success style={{backgroundColor:'#FF6E40'}}>
-                                <Text style={{color:'#FFF'}}>Login</Text>
+                            <Button full success style={{backgroundColor: '#FF6E40'}} onPress={this.onSave}>
+                                <Text style={{color: '#FFF'}}>Login</Text>
                             </Button>
                         </View>
                     </View>
@@ -55,7 +104,7 @@ const styles = StyleSheet.create({
         marginRight: 15,
         marginBottom: 10
     },
-    btn:{
+    btn: {
         marginLeft: 15,
         marginRight: 15,
         marginBottom: 10,
@@ -64,11 +113,11 @@ const styles = StyleSheet.create({
     label_text: {
         color: '#FFF',
         fontSize: hp('2.5%'),
-        marginBottom:3
+        marginBottom: 3
     },
     text_input: {
         backgroundColor: '#FFF',
-        borderColor:'#FFF',
+        borderColor: '#FFF',
         height: hp('6%')
     },
     container: {
