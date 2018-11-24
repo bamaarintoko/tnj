@@ -4,7 +4,8 @@ import {navReducer} from '../Navigator/AppNavigator'
 import {redAuth_} from './authReducers'
 const rootReducer = combineReducers({
     nav: navReducer,
-    redAuth:redAuth_
+    redAuth:redAuth_,
+
 })
 
 export default rootReducer

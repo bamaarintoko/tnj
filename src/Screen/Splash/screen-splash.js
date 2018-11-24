@@ -10,7 +10,7 @@ function mapStateToProps(state) {
 }
 const resetAction = StackActions.reset({
     index: 0,
-    actions: [NavigationActions.navigate({ routeName: 'Login' })],
+    actions: [NavigationActions.navigate({ routeName: 'Home' })],
 });
 class ScreenSplash extends Component {
     componentDidMount() {

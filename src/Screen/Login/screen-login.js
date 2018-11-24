@@ -4,7 +4,12 @@ import {View, Text, StyleSheet, StatusBar, Image} from 'react-native'
 import {Container, Input, Item, Button} from 'native-base'
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {InputPassword, InputUsername} from "../../Components/Input";
-
+import Api from "../../Utils/Api";
+import {NavigationActions, StackActions} from "react-navigation";
+const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: 'Home' })],
+});
 function mapStateToProps(state) {
     return {
         redAuth: state.redAuth
@@ -43,6 +48,7 @@ class ScreenLogin extends Component {
     }
 
     onSave() {
+        // console.log({ "success" : 1 "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9", "user_id": 1 })
         let count_errors = []
 
         if (this.state.username.length < 1) {
@@ -56,6 +62,13 @@ class ScreenLogin extends Component {
         }
         if (count_errors.length < 1) {
             console.log("no error")
+            Api._POST('login',{})
+                .then((response)=>{
+                    if (response.status===200){
+                        this.props.navigation.dispatch(resetAction)
+                    }
+                    console.log(response)
+                })
         } else {
             // console.log("error",errors)
             this.setState({

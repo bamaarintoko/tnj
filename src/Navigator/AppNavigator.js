@@ -14,6 +14,8 @@ import {PersistGate} from "redux-persist/integration/react";
 import {redAuth_} from "../Reducers/authReducers";
 import LoginScreen from '../Screen/Login/screen-login'
 import SplashScreen from '../Screen/Splash/screen-splash'
+import HomeScreen from '../Screen/Home/screen-home'
+import {contactsReducers} from "../Reducers/contactReducers";
 
 const persistConfig = {
     key: 'root',
@@ -22,7 +24,8 @@ const persistConfig = {
 }
 export const AppNavigator = createStackNavigator({
     Login: {screen: LoginScreen},
-    Splash: {screen: SplashScreen}
+    Splash: {screen: SplashScreen},
+    Home: {screen: HomeScreen}
 
 }, {
     headerMode: 'none',
@@ -31,8 +34,8 @@ export const AppNavigator = createStackNavigator({
 export const navReducer = createNavigationReducer(AppNavigator);
 const appReducer = combineReducers({
     nav: navReducer,
-
-    redAuth: redAuth_
+    redAuth: redAuth_,
+    redContact:contactsReducers
 });
 export const middleware = createReactNavigationReduxMiddleware(
     "root",
@@ -69,12 +72,14 @@ class Root extends React.Component {
             return true;
         }.bind(this));
     }
+
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress');
     }
+
     render() {
         return (
-            <AppWithNavigationState />
+            <AppWithNavigationState/>
         );
     }
 }
