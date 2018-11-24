@@ -6,10 +6,13 @@ import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {InputPassword, InputUsername} from "../../Components/Input";
 import Api from "../../Utils/Api";
 import {NavigationActions, StackActions} from "react-navigation";
+import {actLogin} from "./actions";
+
 const resetAction = StackActions.reset({
     index: 0,
-    actions: [NavigationActions.navigate({ routeName: 'Home' })],
+    actions: [NavigationActions.navigate({routeName: 'Home'})],
 });
+
 function mapStateToProps(state) {
     return {
         redAuth: state.redAuth
@@ -24,13 +27,32 @@ class ScreenLogin extends Component {
         this.state = {
             input_error: [],
             username: '',
-            password: ''
+            password: '',
+            initialRedAuth: true
         }
         this.onSave = this.onSave.bind(this)
     }
 
-    componentDidMount() {
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.initialRedAuth === this.props.redAuth.status) {
+            if (this.props.redAuth.status_get) {
+                console.log("===>",this.props)
+                this.props.navigation.dispatch(resetAction)
+            } else {
+                this.props.dispatch({type: 'LOGIN_RESET'})
+            }
+        }
+    }
 
+    componentDidMount() {
+        // this.props.dispatch({
+        //     type:'LOGIN',
+        //     status_get : true,
+        //     data : [],
+        //     message : 'qweqwe'
+        // })
+
+        // console.log("qwe")
         // console.log("asd", this.props)
     }
 
@@ -61,18 +83,11 @@ class ScreenLogin extends Component {
             count_errors.push({password: true})
         }
         if (count_errors.length < 1) {
-            console.log("no error")
-            Api._POST('login',{})
-                .then((response)=>{
-                    if (response.status===200){
-                        this.props.navigation.dispatch(resetAction)
-                    }
-                    console.log(response)
-                })
+            this.props.dispatch(actLogin())
         } else {
             // console.log("error",errors)
             this.setState({
-                input_error : errors
+                input_error: errors
             })
         }
     }

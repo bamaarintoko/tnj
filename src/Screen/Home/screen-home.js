@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Container, Content, Text, View, ListItem, List, Left, Body, Right, Thumbnail, Button} from 'native-base'
-import {StatusBar, StyleSheet, TouchableOpacity} from "react-native";
+import {Image, StatusBar, StyleSheet, TouchableOpacity} from "react-native";
 
 import {actGetcontact} from "./actions";
 import {heightPercentageToDP as hp} from "react-native-responsive-screen";
+import {NavigationActions, StackActions} from "react-navigation";
 
 function mapStateToProps(state) {
     return {
@@ -13,17 +14,23 @@ function mapStateToProps(state) {
     };
 }
 
+const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({routeName: 'Splash'})],
+});
+
 class ScreenHome extends Component {
     constructor(props) {
         super(props);
         this.state = {
             data: [],
-            data_slice :[],
+            data_slice: [],
             initialRedContact: true,
             isLoading: true
         }
         this.onNext = this.onNext.bind(this)
         this.onPrevious = this.onPrevious.bind(this)
+        this.onLogut = this.onLogut.bind(this)
     }
 
 
@@ -32,7 +39,7 @@ class ScreenHome extends Component {
             if (this.props.redContact.status_get) {
                 this.setState({
                     data: this.props.redContact.data,
-                    data_slice : this.props.redContact.data.slice(0,5),
+                    data_slice: this.props.redContact.data.slice(0, 5),
                     isLoading: false
                 })
                 this.props.dispatch({type: 'CONTACTS_RESET'})
@@ -41,18 +48,28 @@ class ScreenHome extends Component {
     }
 
     componentDidMount() {
+        // console.log()
         this.props.dispatch(actGetcontact({}))
     }
-    onNext(){
+
+    onNext() {
         this.setState({
-            data_slice : this.state.data.slice(5,10)
+            data_slice: this.state.data.slice(5, 10)
         })
     }
-    onPrevious(){
+
+    onPrevious() {
         this.setState({
-            data_slice : this.state.data.slice(0,5)
+            data_slice: this.state.data.slice(0, 5)
         })
     }
+
+    onLogut() {
+        // console.log("sadasd")
+        this.props.dispatch({type: 'LOGIN_RESET'})
+        this.props.navigation.dispatch(resetAction)
+    }
+
     render() {
         return (
             <Container>
@@ -70,6 +87,16 @@ class ScreenHome extends Component {
                         <Text>Contact List</Text>
                     </View>
                     <View style={{flex: 1}}>
+                        <TouchableOpacity onPress={this.onLogut}>
+                            <View style={styles.btnOut}>
+                                <Image
+                                    style={{flex: 1}}
+                                    width={25}
+                                    source={require('../../Assets/sign-out.png')}
+                                    resizeMode={"contain"}
+                                />
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <Content>
@@ -103,21 +130,21 @@ class ScreenHome extends Component {
 
                 </Content>
                 <View style={styles.footer}>
-                    <View style={{flex: 2, justifyContent:'center'}}>
+                    <View style={{flex: 2, justifyContent: 'center'}}>
                         <TouchableOpacity onPress={this.onPrevious}>
-                        <View style={styles.btn}>
-                            <Text>Previous</Text>
-                        </View>
+                            <View style={styles.btn}>
+                                <Text>Previous</Text>
+                            </View>
                         </TouchableOpacity>
 
                     </View>
-                    <View style={{flex:1}}>
+                    <View style={{flex: 1}}>
                     </View>
-                    <View style={{flex: 2, justifyContent:'center'}}>
+                    <View style={{flex: 2, justifyContent: 'center'}}>
                         <TouchableOpacity onPress={this.onNext}>
-                        <View style={styles.btn}>
-                            <Text>Next</Text>
-                        </View>
+                            <View style={styles.btn}>
+                                <Text>Next</Text>
+                            </View>
                         </TouchableOpacity>
 
                     </View>
@@ -126,17 +153,24 @@ class ScreenHome extends Component {
         );
     }
 }
+
 const styles = StyleSheet.create({
-    footer : {
+    footer: {
         height: hp('10%'),
         flexDirection: 'row'
     },
-    btn :{
-        backgroundColor:'#BDBDBD',
-        height:hp('5.5%'),
+    btn: {
+        backgroundColor: '#BDBDBD',
+        height: hp('5.5%'),
         margin: 10,
-        justifyContent:'center',
-        alignItems:'center'
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    btnOut: {
+        height: hp('5.5%'),
+        margin: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 export default connect(

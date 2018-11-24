@@ -7,10 +7,9 @@ import {
 } from 'react-navigation-redux-helpers'
 import {persistStore, persistReducer} from 'redux-persist'
 import {AsyncStorage, BackHandler} from 'react-native'
-import {connect, Provider} from "react-redux";
+import {connect} from "react-redux";
 import {applyMiddleware, combineReducers, createStore} from "redux";
 import thunk from 'redux-thunk'
-import {PersistGate} from "redux-persist/integration/react";
 import {redAuth_} from "../Reducers/authReducers";
 import LoginScreen from '../Screen/Login/screen-login'
 import SplashScreen from '../Screen/Splash/screen-splash'
@@ -20,7 +19,7 @@ import {contactsReducers} from "../Reducers/contactReducers";
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['redAuth', 'redSetting']
+    whitelist: ['redAuth']
 }
 export const AppNavigator = createStackNavigator({
     Login: {screen: LoginScreen},
@@ -41,7 +40,6 @@ export const middleware = createReactNavigationReduxMiddleware(
     "root",
     state => state.nav,
 );
-// const ast = this.props;
 const mapStateToProps = (state) => ({
     state: state.nav,
 });
@@ -51,24 +49,23 @@ const App = reduxifyNavigator(AppNavigator, "root");
 const AppWithNavigationState = connect(mapStateToProps)(App);
 const persistedReducer = persistReducer(persistConfig, appReducer)
 export const store = createStore(
-    appReducer,
+    persistedReducer,
     applyMiddleware(thunk, middleware),
 );
-const persistor = persistStore(store)
+export const persistor = persistStore(store)
 
 class Root extends React.Component {
 
 
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', function () {
-            const {dispatch, state} = this.props;
+            const {state} = this.props;
             console.log(this.props)
             if (state.index === 0) {
 
                 BackHandler.exitApp()
                 return false;
             }
-            // dispatch({type: 'Navigation/BACK'});
             return true;
         }.bind(this));
     }

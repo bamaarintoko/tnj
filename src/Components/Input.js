@@ -4,7 +4,6 @@ import {StyleSheet, View} from "react-native";
 import {heightPercentageToDP as hp} from "react-native-responsive-screen";
 
 export const InputUsername = ({val, onChange, onBlur, isError, string}) => {
-    console.log("-->",isError)
     let err = typeof isError === 'undefined' ? false : !!isError.error;
     return (
         <View style={styles.input}>
